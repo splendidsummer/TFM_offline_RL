@@ -21,6 +21,11 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 * **Standard BC (Bahavior Cloning)**
 * **IQL (Implicit Q-Learning)**
 * **TD3+BC (Twin Delayed DDPG)**
+
+
+## Offline Dataset
+
+
 ### Data augmentation by using discrete group symmetry
 
 #### Morphorlogical Symmtry Analysis 
@@ -28,7 +33,7 @@ This fixed-based robot is symmetric w.r.t. rotations of space by $\theta=\frac{2
 
 #### Data augmentation
 
-## Offline Dataset
+
 
 
 
