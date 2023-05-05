@@ -10,7 +10,7 @@ Participants can tackle two tasks during the real-robot stage:
 * Pushing a cube to a target location on the ground and
 * lifting the cube to match a target position and orientation in the air.
 Like last year’s challenge, the Real Robot Challenge III is featured in the NeurIPS 2022 Competition Track.
-![trifinger](trifingerpro_with_cube.jpg =500x300)
+![trifinger](trifingerpro_with_cube.jpg){:height="50%", width="50%"}
 
 ## Methodology 
 ### Offline RL 
