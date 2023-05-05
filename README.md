@@ -24,6 +24,7 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 ### Data augmentation by using discrete group symmetry
 
 #### Morphorlogical Symmtry Analysis 
+This fixed-based robot is symmetric w.r.t. rotations of space by $\theta=\frac{2\pi}{3}$ in the vertical axis. Therefore, its symmetry group is the cyclic group of order three ($\mathbb{G}=\mathbb{C_3}$ ).
 
 #### Data augmentation
 
