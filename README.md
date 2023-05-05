@@ -14,6 +14,11 @@ Like last year’s challenge, the Real Robot Challenge III is featured in the [N
 
 ![trifinger](trifingerpro_with_cube.jpg)
 
+## Offline Dataset
+We provide datasets for both tasks that have been created using an expert policy. The datasets are provided as part of the gym environments implemented in rrc_2022_datasets (see TriFingerDatasetEnv). The environments are compatible with the interface used by D4RL. Thus, they can be easily used in other frameworks such as D3RLPY. 
+
+#### Dataset Description 
+
 ## Methodology 
 ### Offline RL 
 There are 2 kinds of approaches in RL to solve this task, one is online RL(including on-policy & off-police methods), the other one is offline RL, which means the policy of actions is generate to mimic the behaviors of offline dataset. It should be noted that offline RL is surely a different notation from off-policy, in the offline setting, the agent no longer has the ability to interact with the environment and collect additional transitions using the behaviour policy. The learning algorithm is provided with a static dataset of fixed interaction, and must learn the best policy it can using this dataset.
@@ -21,11 +26,6 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 * **Standard BC (Bahavior Cloning)**
 * **IQL (Implicit Q-Learning)**
 * **TD3+BC (Twin Delayed DDPG)**
-
-
-## Offline Dataset
-We provide datasets for both tasks that have been created using an expert policy. The datasets are provided as part of the gym environments implemented in rrc_2022_datasets (see TriFingerDatasetEnv). The environments are compatible with the interface used by D4RL. Thus, they can be easily used in other frameworks such as D3RLPY. 
-#### Dataset Description 
 
 ### Data augmentation by using discrete group symmetry
 
