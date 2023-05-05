@@ -18,7 +18,7 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 * **Standard BC (Bahavior Cloning)**
 * **IQL (Implicit Q-Learning)**
 * **TD3+BC (Twin Delayed DDPG)**
-### Data Augmentation by using discrete group symmetry
+### Data augmentation by using discrete group symmetry
 
 #### Morphorlogical Symmtry Analysis 
 
