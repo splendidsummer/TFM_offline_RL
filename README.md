@@ -22,7 +22,7 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 
 #### Morphorlogical Symmtry Analysis 
 
-#### Data AUF
+#### Data augmentation
 
 
 
