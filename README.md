@@ -11,8 +11,25 @@ Participants can tackle two tasks during the real-robot stage:
 * lifting the cube to match a target position and orientation in the air.
 Like last year’s challenge, the Real Robot Challenge III is featured in the NeurIPS 2022 Competition Track.
 
+## Methodology 
+### Offline RL 
+There are 2 kinds of approaches in RL to solve this task, one is online RL(including on-policy & off-police methods), the other one is offline RL, which means the policy of actions is generate to mimic the behaviors of offline dataset. It should be noted that offline RL is surely a different notation from off-policy, in the offline setting, the agent no longer has the ability to interact with the environment and collect additional transitions using the behaviour policy. The learning algorithm is provided with a static dataset of fixed interaction, and must learn the best policy it can using this dataset.
+We select 3 offline algorithms to solve this chanllenge, which are:
+* **Standard BC (Bahavior Cloning)**
+* **IQL (Implicit Q-Learning)**
+* **TD3+BC (Twin Delayed DDPG)**
+### Data Augmentation by the Theory of Discrete Group Symmetry
+
+#### Morphorlogical Symmtry Analysis 
+
+#### Data AUF
+
+
+
+
 ## Offline Dataset
 ### Observation Space 
 
 
 
+ 
