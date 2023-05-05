@@ -24,7 +24,8 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 
 
 ## Offline Dataset
-
+We provide datasets for both tasks that have been created using an expert policy. The datasets are provided as part of the gym environments implemented in rrc_2022_datasets (see TriFingerDatasetEnv). The environments are compatible with the interface used by D4RL. Thus, they can be easily used in other frameworks such as D3RLPY. 
+#### Dataset Description 
 
 ### Data augmentation by using discrete group symmetry
 
