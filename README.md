@@ -9,7 +9,7 @@ The goal of [challenge in 2022](https://real-robot-challenge.com/) is to solve d
 Participants can tackle two tasks during the real-robot stage:
 * Pushing a cube to a target location on the ground and
 * lifting the cube to match a target position and orientation in the air.
-Like last year’s challenge, the Real Robot Challenge III is featured in the NeurIPS 2022 Competition Track.
+Like last year’s challenge, the Real Robot Challenge III is featured in the [NeurIPS 2022 Competition Track](https://neurips.cc/Conferences/2022/CompetitionTrack).
 
 
 ![trifinger](trifingerpro_with_cube.jpg)
@@ -27,11 +27,7 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 
 #### Data augmentation
 
-
-
-
 ## Offline Dataset
-### Observation Space 
 
 
 
