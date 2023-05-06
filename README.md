@@ -29,10 +29,27 @@ We select 3 offline algorithms to solve this chanllenge, which are:
 
 ### Data augmentation by using discrete group symmetry
 
-#### Morphorlogical Symmtry Analysis 
+#### Morphorlogical Symmetry Analysis 
 This fixed-based robot is symmetric w.r.t. rotations of space by $\theta=\frac{2\pi}{3}$ in the vertical axis. Therefore, its symmetry group is the cyclic group of order three ($\mathbb{G}=\mathbb{C_3}$ ).
 
-#### Data augmentation
+#### Data augmentation by symmetry transformation 
+
+
+## Evaluation
+
+Example Policies
+----------------
+
+Here is the example commands for the pre-stage to show how you should set up for running the evaluation.  You use them to test the evaluation.
+
+For the push task :
+
+    $ python3 -m rrc_2022_datasets.evaluate_pre_stage push rrc2022.example.TorchPushPolicy --n-episodes=3 -v
+
+For the lift task:
+
+    $ python3 -m rrc_2022_datasets.evaluate_pre_stage lift rrc2022.example.TorchLiftPolicy --n-episodes=3 -v
+
 
 
 
