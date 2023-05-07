@@ -77,6 +77,18 @@ if __name__ == '__main__':
     args = parser.parse_args()
     policy_path = args.task + '_' + args.algorithm + '_policy.pt'
 
+    WANDB_CONFIG = {
+        "epochs": 100,
+        "batch_size": 128,
+        # "learning_rate": [0.00001, 0.0001, 0.001, 0.01, 0.1],
+        "learning_rate": 0.0001,
+        "optimizer": 'adam',
+        # "dropout": random.uniform(0.01, 0.80),
+        "normalization": True,
+        "early_stopping": True,
+        'game': game,
+    }
+
     if args.task == "push":
         env_name = "trifinger-cube-push-sim-expert-v0"
         policy = TorchPushPolicy(policy_path)
