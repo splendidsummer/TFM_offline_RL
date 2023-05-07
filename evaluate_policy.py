@@ -1,4 +1,5 @@
 import numpy as np
+import wandb, datetime
 import torch
 import policies
 import argparse
@@ -8,6 +9,8 @@ import pathlib
 import typing
 import gym
 from rrc_2022_datasets import Evaluation, PolicyBase, TriFingerDatasetEnv
+from config import *
+import utils
 
 
 class TorchBasePolicy(PolicyBase):
@@ -78,16 +81,27 @@ if __name__ == '__main__':
     policy_path = args.task + '_' + args.algorithm + '_policy.pt'
 
     WANDB_CONFIG = {
-        "epochs": 100,
-        "batch_size": 128,
-        # "learning_rate": [0.00001, 0.0001, 0.001, 0.01, 0.1],
-        "learning_rate": 0.0001,
-        "optimizer": 'adam',
-        # "dropout": random.uniform(0.01, 0.80),
-        "normalization": True,
-        "early_stopping": True,
-        'game': game,
+        "task": args.task,
+        "algorithm": args.algorithm,
+        "n_episodes": args.n_episodes,
+        "output": args.output,
     }
+    # WANDB_CONFIG.update({'model_config': model_config})
+    now = datetime.datetime.now()
+    now = now.strftime('%Y%m%d%H%M%S')
+
+    wandb.init(
+        job_type='Training',
+        project=PROJECT_NAME,
+        config=WANDB_CONFIG,
+        sync_tensorboard=True,
+        # entity='Symmetry_RL',
+        name='eval_' + args.task + '_' + args.algorithm + '_' + now,
+        # notes = 'some notes related',
+        ####
+    )
+
+    obs_to_keep = utils.modify_obs_to_keep(args.task)
 
     if args.task == "push":
         env_name = "trifinger-cube-push-sim-expert-v0"
@@ -112,12 +126,15 @@ if __name__ == '__main__':
             disable_env_checker=True,
             visualization=args.visualization,
             flatten_obs=flatten_observations,
+            # obs_to_keep=obs_to_keep,
         ),
     )
 
     evaluation = Evaluation(env)
     eval_res = evaluation.evaluate(policy=policy, n_episodes=args.n_episodes,)
     json_result = json.dumps(eval_res, indent=4)
+    wandb.log({**eval_res})
+    # wandb.save(json_result)
 
     print("Evaluation result: ")
     print(json_result)

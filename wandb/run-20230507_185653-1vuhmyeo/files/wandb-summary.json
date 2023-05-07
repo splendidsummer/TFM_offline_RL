@@ -1,0 +1,1 @@
+{"n_episodes": 3, "success_rate": 0.0, "mean_momentary_success": 0.0, "transient_success_rate": 0.0, "return": 196.93774310375252, "max_reward": 0.13139845368762812, "_timestamp": 1683478739.8300045, "_runtime": 126.04834842681885, "_step": 0, "_wandb": {"runtime": 124}}

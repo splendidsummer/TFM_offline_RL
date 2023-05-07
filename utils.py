@@ -30,6 +30,44 @@ ACTION_DIM = 9
 MAX_ACTION = 0.397
 
 
+def modify_obs_to_keep(task: str) -> dict:
+
+    lift_obs_to_keep = {
+        "robot_observation": {
+            "position": True,   "velocity": True, "fingertip_force": True, "fingertip_position": True,
+            "fingertip_velocity": True, "robot_id": False},
+        "object_observation": {
+            "position": True, "orientation": True, "keypoints": True,  "delay": False,
+            "confidence": False},
+        "desired_goal": {
+            # "position": True,
+            "keypoints": True},
+        # "achieved_goal": {"position": False,  "keypoints": False}
+    }
+
+    push_obs_to_keep = {
+        "robot_observation": {
+            "position": True, "velocity": True, "fingertip_force": True, "fingertip_position": True,
+            "fingertip_velocity": True, "robot_id": False},
+        "object_observation": {
+            "position": True, "orientation": True,
+            # "keypoints": True,
+            "delay": False,
+            "confidence": False},
+        "desired_goal": {
+            "position": True,
+            # "keypoints": True
+            },
+        # "achieved_goal": {"position": False,  "keypoints": False}
+
+    }
+
+    if task == 'push':
+        return push_obs_to_keep
+    elif task == 'lift':
+        return lift_obs_to_keep
+
+
 def device_handler(args):
     if torch.cuda.is_available() and args.use_gpu:
         device = torch.device('cuda')
