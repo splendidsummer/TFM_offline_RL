@@ -1,0 +1,81 @@
+{
+    "os": "Linux-5.15.0-71-generic-x86_64-with-glibc2.10",
+    "python": "3.8.0",
+    "heartbeatAt": "2023-05-07T17:53:33.292192",
+    "startedAt": "2023-05-07T17:53:32.102990",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--task=lift",
+        "--algorithm=bc",
+        "--n_epochs=2"
+    ],
+    "state": "running",
+    "program": "/home/summer/Projects/rrc_2022_offlineRL/d3rl.py",
+    "codePath": "d3rl.py",
+    "git": {
+        "remote": "https://github.com/splendidsummer/rrc_2022_offlineRL.git",
+        "commit": "98c976f0fa16f43d2c1f397d1a8788751cc1db5c"
+    },
+    "email": "417846472@qq.com",
+    "root": "/home/summer/Projects/rrc_2022_offlineRL",
+    "host": "summer-Spin-SP513-55N",
+    "username": "summer",
+    "executable": "/home/summer/anaconda3/envs/torch/bin/python",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2564.2535,
+        "min": 400.0,
+        "max": 4700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 914.028,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 400.0,
+            "max": 4700.0
+        }
+    ],
+    "disk": {
+        "total": 232.6243553161621,
+        "used": 126.97117233276367
+    },
+    "memory": {
+        "total": 15.423629760742188
+    }
+}

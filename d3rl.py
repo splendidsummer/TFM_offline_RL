@@ -1,5 +1,7 @@
 import d3rlpy
 import gym
+import wandb
+import datetime
 import pathlib
 import logging, argparse
 from d3rlpy.dataset import MDPDataset
@@ -10,9 +12,33 @@ from d3rlpy.metrics.scorer import evaluate_on_environment
 from d3rlpy.metrics.scorer import td_error_scorer
 from d3rlpy.metrics.scorer import average_value_estimation_scorer
 from d3rlpy.preprocessing import action_scalers
+import utils
+from config import *
 
 
 def main(args):
+    WANDB_CONFIG = {
+        "task": args.task,
+        "algorithm": args.algorithm,
+        "n_epochs": args.n_epochs,
+    }
+    # WANDB_CONFIG.update({'model_config': model_config})
+    now = datetime.datetime.now()
+    now = now.strftime('%Y%m%d%H%M%S')
+
+    wandb.init(
+        job_type='Training',
+        project=PROJECT_NAME,
+        config=WANDB_CONFIG,
+        sync_tensorboard=True,
+        # entity='Symmetry_RL',
+        name='train_' + args.task + '_' + args.algorithm + '_'
+             + str(args.n_epochs) + 'epochs' + now,
+        # notes = 'some notes related',
+        ####
+    )
+
+    obs_to_keep = utils.modify_obs_to_keep(args.task)
 
     if args.task == "push":
         env_name = "trifinger-cube-push-sim-expert-v0"
@@ -70,30 +96,36 @@ def main(args):
     # evaluate algorithm on the environment
     evaluate_scorer = evaluate_on_environment(env)
 
-    model.fit(
+    results = model.fit(
         dataset,
         eval_episodes=test_episodes,
-        n_epochs=10,
+        n_epochs=args.n_epochs,
         scorers={
             'enviroment': evaluate_scorer
         }
     )
+    results = [result[1] for result in results]
+    for result in results:
+        wandb.log({**result})
 
+    print('results:  ', results)
     print('finishing fitting!!')
 
     model.save_model(args.task + '_' + args.algorithm + '.pt')
     model.save_policy(args.task + '_' + args.algorithm + '_policy.pt')
+    wandb.save(args.task + '_' + args.algorithm + '.pt')
+    wandb.save(args.task + '_' + args.algorithm + '_policy.pt')
 
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", type=str, choices=["push", "lift"],
-        help="Which task to evaluate ('push' or 'lift').", )
+                        help="Which task to evaluate ('push' or 'lift').", )
     parser.add_argument("--algorithm", type=str, choices=["bc", "td3+bc", "iql", "cql"],
-        help="Which algorithm to evaluate ('push' or 'lift').", )
-    parser.add_argument("--n_episodes", type=int, default=64,
-        help="Number of episodes to run. Default: %(default)s",)
+                        help="Which algorithm to evaluate ('push' or 'lift').", )
+    parser.add_argument("--n_epochs", type=int, default=10,
+                        help="Number of episodes to run. Default: %(default)s", )
     # parser.add_argument("--policy_path", type=str, help="The path of trained model",)
     # parser.add_argument("--visualization", "-v", action="store_true",
     #     help="Enable visualization of environment.",)
@@ -103,5 +135,3 @@ if __name__ == '__main__':
     #     help="Save results to a JSON file.",)
     args = parser.parse_args()
     main(args)
-
-

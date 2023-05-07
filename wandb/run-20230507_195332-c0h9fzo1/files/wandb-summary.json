@@ -1,0 +1,1 @@
+{"time_sample_batch": 0.00019574410385555691, "time_algorithm_update": 0.001295699099699656, "loss": 0.010080711867117013, "time_step": 0.0019620208938916526, "enviroment": 761.239566320018, "_timestamp": 1683482441.9536624, "_runtime": 429.83611035346985, "_step": 1, "_wandb": {"runtime": 428}}

@@ -91,7 +91,7 @@ if __name__ == '__main__':
     now = now.strftime('%Y%m%d%H%M%S')
 
     wandb.init(
-        job_type='Training',
+        job_type='Evaluation',
         project=PROJECT_NAME,
         config=WANDB_CONFIG,
         sync_tensorboard=True,
