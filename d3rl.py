@@ -111,10 +111,10 @@ def main(args):
     print('results:  ', results)
     print('finishing fitting!!')
 
-    model.save_model(args.task + '_' + args.algorithm + '.pt')
-    model.save_policy(args.task + '_' + args.algorithm + '_policy.pt')
-    wandb.save(args.task + '_' + args.algorithm + '.pt')
-    wandb.save(args.task + '_' + args.algorithm + '_policy.pt')
+    model.save_model(args.task + '_' + args.algorithm + '_' + args.n_epochs + 'epochs.pt')
+    model.save_policy(args.task + '_' + args.algorithm + '_' + args.n_epochs + 'epochs' + '_policy.pt')
+    wandb.save(args.task + '_' + args.algorithm + '_' + str(args.n_epochs) + 'epochs.pt')
+    wandb.save(args.task + '_' + args.algorithm + '_' + str(args.n_epochs) + 'epochs' + '_policy.pt')
 
 
 if __name__ == '__main__':

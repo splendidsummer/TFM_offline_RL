@@ -169,3 +169,5 @@ policies/
 ./trained_models/
 trained_models/
 policies_best/
+d3rlpy_logs/
+wandb/
