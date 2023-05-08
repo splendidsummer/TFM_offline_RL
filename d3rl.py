@@ -51,10 +51,10 @@ def main(args):
         Model = BC
     elif args.algorithm == "td3+bc":
         Model = TD3PlusBC
-    elif args.task == "iql":
-        env_name = IQL
-    elif args.task == "cql":
-        env_name = CQL
+    elif args.algorithm == "iql":
+        Model = IQL
+    elif args.algorithm == "cql":
+        Model = CQL
 
     env = gym.make(
         env_name,
