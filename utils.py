@@ -394,3 +394,4 @@ class Normlizor():
             if save_path == 'default':
                 save_path = os.path.abspath(os.path.dirname(__file__))
             np.save(f'{save_path}/{name}.npy', params)
+

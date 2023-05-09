@@ -7,13 +7,16 @@ import logging, argparse
 from d3rlpy.dataset import MDPDataset
 import rrc_2022_datasets
 from sklearn.model_selection import train_test_split
-from d3rlpy.algos import BC, TD3PlusBC, IQL, CQL
+from d3rlpy.algos import BC, TD3PlusBC, IQL, CQL, AWAC, \
+    BCQ, BEAR, CRR, PLAS, PLASWithPerturbation
+
 from d3rlpy.metrics.scorer import evaluate_on_environment
 from d3rlpy.metrics.scorer import td_error_scorer
 from d3rlpy.metrics.scorer import average_value_estimation_scorer
 from d3rlpy.preprocessing import action_scalers
 import utils
 from config import *
+import stable_baselines3 as sb3
 
 
 def main(args):
@@ -55,6 +58,16 @@ def main(args):
         Model = IQL
     elif args.algorithm == "cql":
         Model = CQL
+    elif args.algorithm == "awac":
+        Model = AWAC
+    elif args.algorithm == "bcq":
+        Model = BCQ
+    elif args.algorithm == "crr":
+        Model = CRR
+    elif args.algorithm == "plas":
+        Model = PLAS
+    elif args.algorithm == "plaswp":
+        Model = PLASWithPerturbation
 
     env = gym.make(
         env_name,
@@ -122,8 +135,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--task", type=str, choices=["push", "lift"],
                         help="Which task to evaluate ('push' or 'lift').", )
-    parser.add_argument("--algorithm", type=str, choices=["bc", "td3+bc", "iql", "cql"],
-                        help="Which algorithm to evaluate ('push' or 'lift').", )
+    parser.add_argument("--algorithm", type=str, choices=
+    ["bc", "td3+bc", "iql", "cql", "awac", "bcq", "bear", "crr", "plas", "plaswp"],
+                        help="Which algorithm to train ('push' or 'lift').", )
     parser.add_argument("--n_epochs", type=int, default=10,
                         help="Number of episodes to run. Default: %(default)s", )
     # parser.add_argument("--policy_path", type=str, help="The path of trained model",)
