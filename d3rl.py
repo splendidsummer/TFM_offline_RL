@@ -6,6 +6,7 @@ import pathlib
 import logging, argparse
 from d3rlpy.dataset import MDPDataset
 import rrc_2022_datasets
+from rrc_2022_datasets import TriFingerDatasetEnv
 from sklearn.model_selection import train_test_split
 from d3rlpy.algos import BC, TD3PlusBC, IQL, CQL, AWAC, \
     BCQ, BEAR, CRR, PLAS, PLASWithPerturbation
