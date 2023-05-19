@@ -73,19 +73,31 @@ if __name__ == '__main__':
     # parser.add_argument("--policy_path", type=str, help="The path of trained model",)
     parser.add_argument("--visualization", "-v", action="store_true",
         help="Enable visualization of environment.",)
-    parser.add_argument("--n_episodes", type=int, default=64,
+    parser.add_argument("--n_epochs", type=int, default=10,
+        help="Training epochs",)
+    parser.add_argument("--aug", type=str, default='raw',
+        help="Data augmented or not.",)
+    parser.add_argument("--probs", type=float, default=0.01,
+        help="Data augmented or not.",)
+    parser.add_argument("--n_episodes", type=int, default=10,
         help="Number of episodes to run. Default: %(default)s",)
     parser.add_argument("--output", type=pathlib.Path, metavar="FILENAME",
         help="Save results to a JSON file.",)
     args = parser.parse_args()
-    policy_path = args.task + '_' + args.algorithm + '_policy.pt'
+    policy_path = 'aug/' + args.task + '_' + args.algorithm + '_' + args.aug \
+                  + '_' + str(int(args.probs*100)) + '_' + str(args.n_epochs) \
+                  + 'epochs' + '_policy.pt'
 
     WANDB_CONFIG = {
         "task": args.task,
         "algorithm": args.algorithm,
+        "aug": args.aug,
+        "probs": args.probs,
+        "n_epochs": args.n_epochs,
         "n_episodes": args.n_episodes,
         "output": args.output,
     }
+
     # WANDB_CONFIG.update({'model_config': model_config})
     now = datetime.datetime.now()
     now = now.strftime('%Y%m%d%H%M%S')
@@ -96,7 +108,10 @@ if __name__ == '__main__':
         config=WANDB_CONFIG,
         sync_tensorboard=True,
         # entity='Symmetry_RL',
-        name='eval_' + args.task + '_' + args.algorithm + '_' + now,
+        # name='eval_' + args.task + '_' + args.algorithm + '_' + now,
+        name='eval_' + args.task + '_' + args.algorithm + '_' + args.aug \
+                  + '_' + str(int(args.probs*100)) + str(args.n_epochs) \
+                  + 'epochs',
         # notes = 'some notes related',
         ####
     )

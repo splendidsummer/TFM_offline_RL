@@ -168,6 +168,9 @@ policies/
 ./save/
 ./trained_models/
 trained_models/
+wandb/
+dataset/
+
 policies_best/
 d3rlpy_logs/
 wandb/
