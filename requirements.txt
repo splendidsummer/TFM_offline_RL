@@ -1,0 +1,8 @@
+numpy ==1.24.3
+gym >= 0.26.0
+escnn == 1.0.11
+morpho_symm
+wandb
+hydra
+torch >= 2.0.0
+scipy
