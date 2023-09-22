@@ -6,7 +6,7 @@
 
 # Introduction
 This repo is for my master thesis project, in the project we are trying to apply morphological symmetries in dynamic systems along with their corresponding group operations well-defined by a theoretical framework [discrete symmetries of robotics systems](https://arxiv.org/abs/2302.10433). 
-We have exploited the symmetric MDP both in the online reinforcement learning(RL) setting and offline RL setting. Unfortunately, we have to split our overall implementation into 2 separate repos, one for the online methods by using parallel robot simulation platform *IsaacGym* built by NVIDIA while using their default RL package rl_games, and the other one for 
+We have exploited the symmetric MDP both in the online reinforcement learning(RL) setting and offline RL setting. Unfortunately, we have to split our overall implementation into 2 separate repos, one for the online methods by using parallel robot simulation platform **IsaacGym** built by NVIDIA while using their default RL package rl_games, and the other one for 
 
 
 ## About this chanllenge
