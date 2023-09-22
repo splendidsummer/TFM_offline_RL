@@ -133,7 +133,7 @@ class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
         # out_type = self._encoder.out_type
         out_type = self._encoder.network.out_type  # out group repretation type of IIDbatch
         out = compute_invariant_features(out, out_type)   # invariant features here
-        # out = self._head(out)
+        out = self._head(out)
 
         return QFunctionOutput(
             q_value=self._out_fc(out),
