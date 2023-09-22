@@ -4,7 +4,14 @@
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/ait-bsc.svg?logo=python&logoColor=FFE873)](https://pypi.org/project/ait-bsc/)
 
+# Introduction
+This repo is for my master thesis project, in the project we are trying to apply morphological symmetries in dynamic systems along with their corresponding group operations well-defined by a theoretical framework [discrete symmetries of robotics systems](https://arxiv.org/abs/2302.10433). 
+We have exploited the symmetric MDP both in the online reinforcement learning(RL) setting and offline RL setting. Unfortunately, we have to split our overall implementation into 2 separate repos, one for the online methods by using parallel robot simulation platform **IsaacGym** built by NVIDIA while using their default RL package rl_games, and the other one for 
+
+
 ## About this chanllenge
+
+
 The goal of [challenge in 2022](https://real-robot-challenge.com/) is to solve dexterous manipulation tasks with offline reinforcement learning (RL) or imitation learning. The participants are provided with datasets containing dozens of hours of robotic data and can evaluate their policies remotely on a cluster of real TriFinger robots.
 Participants can tackle two tasks during the real-robot stage:
 * Pushing a cube to a target location on the ground and
