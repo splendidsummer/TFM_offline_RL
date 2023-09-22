@@ -146,33 +146,6 @@ def isotypic_basis(group: Group, num_regular_fields: int, prefix=''):
     return iso_reps
 
 
-# Here we should design the process function in model forward call.
-def process_trifinger_obs(batch_obs: torch.Tensor):
-    transformed_ob_dim = 148  # to be confirmed
-    batch_size = batch_obs.shape[0]
-    transformed_obs = torch.zeros((batch_size, transformed_ob_dim), dtype=torch.float32)
-    pos_ones = torch.ones((batch_size, 1))
-    transformed_obs[:, :24] = batch_obs[:, :24]
-    transformed_obs[:, 24:33] = batch_obs[:, 24:33]
-    transformed_obs[:, 33: 57] = batch_obs[:, 33: 57]
-    transformed_obs[:, 57: 58] = batch_obs[:, 57: 58]
-    transformed_obs[:, 58: 59] = batch_obs[:, 58: 59]
-    transformed_obs[:, 59: 83] = batch_obs[:, 59: 83]
-    transformed_obs[:, 83: 92] = quaternion2rot(batch_obs[:, 83: 87])
-    transformed_obs[:, 92: 96] = torch.cat([batch_obs[:, 87: 90], pos_ones], axis=-1)
-    transformed_obs[:, 96: 99] = batch_obs[:, 90: 93]
-    transformed_obs[:, 99: 103] = torch.cat([batch_obs[:, 93: 96], pos_ones], axis=-1)
-    transformed_obs[:, 103: 107] = torch.cat([batch_obs[:, 96: 99], pos_ones], axis=-1)
-    transformed_obs[:, 107: 111] = torch.cat([batch_obs[:, 99: 102], pos_ones], axis=-1)
-    transformed_obs[:, 111: 120] = batch_obs[:, 102: 111]
-    transformed_obs[:, 120: 129] = batch_obs[:, 111: 120]
-    transformed_obs[:, 129:130] = batch_obs[:, 120: 121]
-    transformed_obs[:, 130: 139] = batch_obs[:, 121: 130]
-    transformed_obs[:, 139: 148] = batch_obs[:, 130: 139]
-
-    return transformed_obs
-
-
 if __name__ == '__main__':
     # robot_name1 = 'Trifinger'  # or any of the robots in the library (see `/morpho_symm/cfg/robot`)
     # initialize(config_path="../cfg/supervised/robot", version_base='1.3')
