@@ -160,7 +160,7 @@ if __name__ == '__main__':
     # }
     #
     # batch_size = 8
-    # trifinger_state_dim = 157
+    # trifinger_state_dim = 157  # transformed obs dim + action dim
     # inputs = torch.randn((batch_size, trifinger_state_dim))
     # trifinger_encoder = EMLPNoLast(**emlp_args)
 

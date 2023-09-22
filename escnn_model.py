@@ -108,7 +108,7 @@ rep_features_iso_basis = group_utils.isotypic_basis(G, num_regular_field, prefix
 inv_encoder_out_type = FieldType(gspace, [rep_iso for rep_iso in rep_features_iso_basis.values()])
 
 ########################################################################
-# Setting the structure params of Cartpole for EMLP model
+# Setting the structure params of Trifinger for EMLP model
 ########################################################################
 trifinger_units = [256, 256]
 trifinger_gspace = escnn.gspaces.no_base_space(Trifinger_G)
