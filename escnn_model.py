@@ -24,6 +24,10 @@ trifinger_num_regular_field = int(np.ceil(trifinger_n_hidden_neurons / Trifinger
 trifinger_rep_features_iso_basis = group_utils.isotypic_basis(Trifinger_G, trifinger_num_regular_field, prefix='ObsSpace')
 trifinger_inv_encoder_out_type = FieldType(trifinger_gspace, [rep_iso for rep_iso in trifinger_rep_features_iso_basis.values()])
 
+##################################################################
+# Argments updated for the newest EMLP impl
+#################################################################
+
 emlp_args = {
     'units': units,
     'activation': escnn.nn.ReLU,
@@ -32,10 +36,9 @@ emlp_args = {
 }
 
 categorical_emlp_args = {
-    'units': units,
-    'activation': escnn.nn.ELU,
     'in_type': policy_in_type,
     'out_type': categorical_prob_type,
+    'activation': "ELU",
 }
 
 cartpole_critic_emlp_args = {

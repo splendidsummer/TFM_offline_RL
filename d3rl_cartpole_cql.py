@@ -1,27 +1,11 @@
-"""
-Modify source code
-    1. to set escnn==False
-    2. Using the full dataset to train CQL
-
-wandb config to watch gradients:
-    # for name, param in model.named_parameters():
-    #     wandb.log({f'gradients/{name}': wandb.Histogram(param.grad)})
-"""
-
-import pandas as pd
-from d3rlpy.preprocessing import action_scalers
-from datetime import datetime
 from escnn_model import *
-from gym.envs import classic_control
 import d3rlpy
 import wandb
 import gym
 import h5py
 import numpy as np
-from d3rlpy.dataset import MDPDataset
-from sklearn.model_selection import train_test_split
-from d3rlpy.algos import DiscreteCQLConfig, DiscreteBCConfig, DiscreteBCQConfig
-from d3rlpy.metrics import EnvironmentEvaluator, DiscreteActionMatchEvaluator
+from d3rlpy.algos import DiscreteCQLConfig
+from d3rlpy.metrics import EnvironmentEvaluator
 from datetime import datetime
 import argparse
 
@@ -31,7 +15,7 @@ parser.add_argument("--algorithm", type=str, choices=
                     ["bc", "td3+bc", "iql", "cql", "awac", "bcq", "bear", "crr", "plas", "plaswp"],
                     default='bc', help="Which algorithm to train ('push' or 'lift').", )
 parser.add_argument('--augmentation', '-a', action='store_true')
-# parser.add_argument('--escnn', '-e',  action='store_true')
+parser.add_argument('--escnn', '-e',  action='store_true')
 parser.add_argument("--train_ratio", type=float, default=1.0, help="Percentage of data split from full trainset.", )
 parser.add_argument("--test_ratio", type=float, default=1.0, help="Percentage of data split from full dataset", )
 args = parser.parse_args()
@@ -42,14 +26,13 @@ now = now.strftime('%m%d%H%M%S')
 WANDB_CONFIG = {
     'algorithm': args.algorithm,
     'seed': args.seed,
-    'augmentation': True,
-    'escnn': True,
+    'augmentation': args.augmentation,
+    'escnn': args.escnn,
     'train_ratio':  args.train_ratio,
     'test_ratio': args.test_ratio,
 }
 
 wandb.init(
-    # project='Cartpole_' + 'Offline' + '_EquivariantNN_Prob',
     project='Cartpole_Offline_CQL_Final',
     config=WANDB_CONFIG,
     entity='unicorn_upc_dl',
@@ -99,7 +82,6 @@ else:
         ).create(device=None)
 
 cql.build_with_dataset(dataset)   # check whether we put the paramters into optimizer
-# wandb.watch(cql.impl.modules.q_funcs[0], log='all')
 
 results = cql.fit(
     dataset,
@@ -115,28 +97,8 @@ results = cql.fit(
 
 results = [result[1] for result in results]
 
-# num_epochs = len(results)
-# col_name = list(results[0].keys())
-# losses = [result['loss'] for result in results]
-# rewards = [result['reward'] for result in results]
-# action_matches = [result['action match'] for result in results]
-# result_dict = {
-#     'loss': losses,
-#     'reward': rewards,
-#     'action_match': action_matches,
-# }
-#
-# csv_file = 'augmentation_' + str(config.augmentation) + '_' + \
-#            'escnn_' + str(config.escnn) + '_' + now + \
-#            '.csv'
-# result_df = pd.DataFrame(result_dict)
-# import os
-# result_folder = './results/BCQ'
-# csv_file = os.path.join(result_folder, csv_file)
-# result_df.to_csv(csv_file)
-
-# for result in results:
-#     wandb.log({**result})
+for result in results:
+    wandb.log({**result})
 
 
 print('results:  ', results)

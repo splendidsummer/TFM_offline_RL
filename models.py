@@ -125,6 +125,7 @@ class EMLP(EquivariantModule):
 
     def forward(self, x):
         """Forward pass of the EMLP model."""
+        x = self.net.in_type(x)
         return self.net(x)
 
     def reset_parameters(self, init_mode=None):

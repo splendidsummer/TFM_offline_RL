@@ -156,8 +156,20 @@ class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
     # _encoder: Encoder
     # _fc: nn.Linear
     """
-    Remark: Here we are plan to the newest equivariant version in models.py
+    Remark:
+        1. Here we are plan to the newest equivariant version in models.py.
+        2. To build the equivariant encoder:
+            2.1 Create the CartpoleEnvEncoder in escnn_model.py with
+                a) the in_type corresponding to the state space
+                b) the out_type corresponding to flip the outputs of the 2 neurons in the last layer
+            2.2 Call the CartpoleEnvEncoder in CartpoleEnvEncoderFactory
+            2.3 Set the customized encoder factory = CartpoleEnvEncoderFactory()
+        3. Simplify the forward pass of Q function by only using out = self._encoder(inputs)
+
+    Notice: Here the output of encoder are not being extracted as invariant features later!!!
+            But we may try to extract the invariant features later.
     """
+
     # def __init__(self, encoder: Encoder, hidden_size: int, action_size: int):
     def __init__(self, encoder, hidden_size: int, action_size: int,
                  # head_hidden_size=128,
@@ -179,6 +191,7 @@ class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
     # def encoder(self) -> Encoder:
     def encoder(self):
         return self._encoder
+
 
 class DiscreteMeanQFunctionForwarder(DiscreteQFunctionForwarder):
     _q_func: DiscreteMeanQFunction
