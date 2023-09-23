@@ -7,6 +7,8 @@ from hydra import compose, initialize
 from morpho_symm.utils.robot_utils import load_symmetric_system
 from morpho_symm.utils.algebra_utils import gen_permutation_matrix
 from morpho_symm.utils.group_utils import group_rep_from_gens
+from escnn.group import CyclicGroup
+from util_funcs import group_utils
 
 
 def load_trifinger_G(robot_cfg):
@@ -113,10 +115,104 @@ def load_trifinger_G(robot_cfg):
     return G, value_in_type, policy_in_type, value_out_type, policy_out_type, trivial_action_out_type
 
 
+def load_cartpole_G():
+    cfg = {
+        'perm': [[0, 1]],
+        'reflex': [[-1, -1]],
+        'perm_TqQ': [[0, 1]],
+        'reflex_TqQ': [[-1, -1]],
+        'value_perm': [[0, 1, 2, 3, 4]],
+        'value_reflex': [[-1, -1, -1, -1, -1]],  # 0,1 process of the action to 2*action - 1
+        'policy_perm': [[0, 1]],
+        'policy_reflex': [[-1, -1]],
+        'categorical_policy_perm': [[1, 0]],
+        'categorical_policy_reflex': [[1, 1]],
+    }
+
+    G = CyclicGroup._generator(2)  # Cyclicgroup2
+    rep_field = float
+    dimQ_js, dimTqQ_js = 2, 2
+    rep_Q_js = {G.identity: np.eye(dimQ_js, dtype=rep_field)}
+    rep_po = {G.identity: np.eye(dimQ_js, dtype=rep_field)}
+    rep_va = {G.identity: np.eye(len(cfg['value_perm'][0]), dtype=rep_field)}
+    rep_out_prob = {G.identity: np.eye(2, dtype=rep_field)}
+    rep_categorical = {G.identity: np.eye(2, dtype=rep_field)}
+
+    # Generate ESCNN representation of generators
+    for g_gen, perm, refx in zip(G.generators, cfg['perm'], cfg['reflex']):
+        assert len(perm) == dimQ_js == len(refx), \
+            f"Dimension of joint-space position coordinates dim(Q_js)={dimQ_js} != dim(rep_Q_JS): {len(refx)}"
+        refx = np.array(refx, dtype=rep_field)
+        rep_Q_js[g_gen] = gen_permutation_matrix(oneline_notation=perm, reflections=refx)
+
+    # Generate ESCNN representation of generators
+    for g_gen, perm, refx in zip(G.generators, cfg['policy_perm'], cfg['policy_reflex']):
+        refx = np.array(refx, dtype=rep_field)
+        rep_po[g_gen] = gen_permutation_matrix(oneline_notation=perm, reflections=refx)
+
+    for g_gen, perm, refx in zip(G.generators, cfg['value_perm'], cfg['value_reflex']):
+        refx = np.array(refx, dtype=rep_field)
+        rep_va[g_gen] = gen_permutation_matrix(oneline_notation=perm, reflections=refx)
+
+    for g_gen, perm, refx in zip(G.generators, cfg['categorical_policy_perm'], cfg['categorical_policy_reflex']):
+        refx = np.array(refx, dtype=rep_field)
+        rep_categorical[g_gen] = gen_permutation_matrix(oneline_notation=perm, reflections=refx)
+
+    # Generate the entire group
+    rep_Q_js = group_rep_from_gens(G, rep_Q_js)
+    rep_po = group_rep_from_gens(G, rep_po)
+    rep_va = group_rep_from_gens(G, rep_va)
+    rep_categorical = group_rep_from_gens(G, rep_categorical)
+    rep_Q_js.name = 'Q_js'
+    rep_TqQ_js = rep_Q_js
+    rep_TqQ_js.name = 'TqQ_js'
+    rep_po.name = 'Policy'
+    rep_va.name = 'Value'
+    rep_categorical.name = 'Categorical'
+
+    # Add representations to the group.
+    G.representations.update(Q_js=rep_Q_js,
+                             TqQ_js=rep_TqQ_js,
+                             Policy=rep_po,
+                             Value=rep_va,
+                             Categorical=rep_categorical,
+                             )
+
+    rep_QJ = G.representations['Q_js']
+    rep_TqJ = G.representations['TqQ_js']
+    rep_po = G.representations['Policy']
+    rep_va = G.representations['Value']
+    rep_categorical = G.representations['Categorical']
+
+    gspace = escnn.gspaces.no_base_space(G)
+    value_in_type = FieldType(gspace, [rep_va])
+    policy_in_type = FieldType(gspace, [rep_QJ, rep_TqJ])
+    value_out_type = FieldType(gspace, [gspace.trivial_repr])
+    policy_out_type = FieldType(gspace, [rep_po])
+    categorical_prob_type = FieldType(gspace, [rep_categorical])
+
+    ########################################################################
+    # Setting the structure params of Cartpole for EMLP model
+    ########################################################################
+    n_hidden_neurons = 256
+    num_regular_field = int(n_hidden_neurons / G.order())
+    # Compute the observation space Isotypic Rep from the regular representation
+    # Define the observation space in the ISOTYPIC BASIS!
+
+    rep_features_iso_basis = group_utils.isotypic_basis(G, num_regular_field, prefix='ObsSpace')
+    inv_encoder_out_type = FieldType(gspace, [rep_iso for rep_iso in rep_features_iso_basis.values()])
+
+    return G, value_in_type, policy_in_type, value_out_type, policy_out_type, \
+        categorical_prob_type, inv_encoder_out_type
+
+
 robot_name = 'Trifinger'  # or any of the robots in the library (see `/morpho_symm/cfg/robot`)
 hydra.core.global_hydra.GlobalHydra.instance().clear()
 initialize(config_path="cfg/supervised/robot/", version_base='1.3')
 trifinger_group_cfg = compose(config_name=f"{robot_name.lower()}.yaml")
+
+G, value_in_type, policy_in_type, value_out_type, policy_out_type, \
+        categorical_prob_type, inv_encoder_out_type = load_cartpole_G()
 
 Trifinger_G, Trifinger_value_in_type, Trifinger_policy_in_type, \
     Trifinger_value_out_type, Trifinger_policy_out_type, \

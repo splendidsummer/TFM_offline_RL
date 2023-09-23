@@ -109,10 +109,55 @@ class DiscreteMeanQFunction(DiscreteQFunction):
         return self._encoder
 
 
+############################################################################
+## Equivariant Encoder + Invariant Extractor + Normal NN head
+############################################################################
+# class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
+#     # _encoder: Encoder
+#     # _fc: nn.Linear
+#
+#     # def __init__(self, encoder: Encoder, hidden_size: int, action_size: int):
+#     def __init__(self, encoder, hidden_size: int, action_size: int,
+#                  # head_hidden_size=128,
+#                  num_hidden_layers=2,
+#                  ):
+#         super().__init__()
+#         self._encoder = encoder
+#         self._head = nn.Sequential()
+#         for i in range(num_hidden_layers):
+#             self._head.add_module(f'normal_hidden{i}', nn.Linear(hidden_size, hidden_size))
+#             self._head.add_module(f'normal_activation{i}', nn.ReLU())
+#         self._out_fc = nn.Linear(hidden_size, action_size)
+#
+#     def forward(self, x: torch.Tensor) -> QFunctionOutput:
+#         # cart position, cart velocity, pole angle, pole angle velocity
+#         out = self._encoder(x)
+#         # out_type = self._encoder.out_type
+#         out_type = self._encoder.network.out_type  # out group repretation type of IIDbatch
+#         out = compute_invariant_features(out, out_type)   # invariant features here
+#         out = self._head(out)
+#
+#         return QFunctionOutput(
+#             q_value=self._out_fc(out),
+#             quantiles=None,
+#             taus=None,
+#         )
+#
+#     @property
+#     # def encoder(self) -> Encoder:
+#     def encoder(self):
+#         return self._encoder
+
+
+############################################################################
+## Equivariant Encoder for Discrete Action Value
+############################################################################
 class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
     # _encoder: Encoder
     # _fc: nn.Linear
-
+    """
+    Remark: Here we are plan to the newest equivariant version in models.py
+    """
     # def __init__(self, encoder: Encoder, hidden_size: int, action_size: int):
     def __init__(self, encoder, hidden_size: int, action_size: int,
                  # head_hidden_size=128,
@@ -120,23 +165,12 @@ class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
                  ):
         super().__init__()
         self._encoder = encoder
-        self._head = nn.Sequential()
-        for i in range(num_hidden_layers):
-            self._head.add_module(f'normal_hidden{i}', nn.Linear(hidden_size, hidden_size))
-            self._head.add_module(f'normal_activation{i}', nn.ReLU())
-        self._out_fc = nn.Linear(hidden_size, action_size)
 
     def forward(self, x: torch.Tensor) -> QFunctionOutput:
         # cart position, cart velocity, pole angle, pole angle velocity
-        # TODO: modify the forward process according to Daniel's code
         out = self._encoder(x)
-        # out_type = self._encoder.out_type
-        out_type = self._encoder.network.out_type  # out group repretation type of IIDbatch
-        out = compute_invariant_features(out, out_type)   # invariant features here
-        out = self._head(out)
-
         return QFunctionOutput(
-            q_value=self._out_fc(out),
+            q_value=out,
             quantiles=None,
             taus=None,
         )
@@ -145,7 +179,6 @@ class EquivariantDiscreteMeanQFunction(DiscreteQFunction):
     # def encoder(self) -> Encoder:
     def encoder(self):
         return self._encoder
-
 
 class DiscreteMeanQFunctionForwarder(DiscreteQFunctionForwarder):
     _q_func: DiscreteMeanQFunction

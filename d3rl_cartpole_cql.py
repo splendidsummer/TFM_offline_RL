@@ -86,7 +86,8 @@ if config.escnn:
     cql = DiscreteCQLConfig(
         # observation_scaler=d3rlpy.preprocessing.StandardObservationScaler(),
         # action_scaler=d3rlpy.preprocessing.MinMaxActionScaler,
-        encoder_factory=CartpoleInvEncoderFactory(),  # actor and critic using the same customized encoder
+        # encoder_factory=CartpoleInvEncoderFactory(),  # actor and critic using the same customized encoder
+        encoder_factory=CartpoleEnvEncoderFactory(),
         escnn=config.escnn,
 
     ).create(device=None)
