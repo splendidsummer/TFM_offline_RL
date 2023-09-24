@@ -21,7 +21,7 @@ parser.add_argument("--algorithm", type=str, choices=
                     ["bc", "td3+bc", "iql", "cql", "awac", "bcq", "bear", "crr", "plas", "plaswp"],
                     default='bc', help="Which algorithm to train ('push' or 'lift').", )
 parser.add_argument('--augmentation', '-a', action='store_true')
-# parser.add_argument('--escnn', '-e',  action='store_true')
+parser.add_argument('--escnn', '-e',  action='store_true')
 parser.add_argument("--train_ratio", type=float, default=0.01, help="Percentage of data split from full trainset.", )
 parser.add_argument("--test_ratio", type=float, default=0.3, help="Percentage of data split from full dataset", )
 args = parser.parse_args()
@@ -33,9 +33,8 @@ now = now.strftime('%m%d%H%M%S')
 WANDB_CONFIG = {
     'algorithm': args.algorithm,
     'seed': args.seed,
-    # 'augmentation': args.augmentation,
-    'augmentation': False,
-    'escnn': True,
+    'augmentation': args.augmentation,
+    'escnn': args.escnn,
     'train_ratio':  args.train_ratio,
     'test_ratio': args.test_ratio,
 }
@@ -76,8 +75,10 @@ if config.escnn:
     bc = DiscreteBCConfig(
         observation_scaler=d3rlpy.preprocessing.StandardObservationScaler(),
         # action_scaler=d3rlpy.preprocessing.MinMaxActionScaler,
-        encoder_factory=C2CategoricalEncoderFactory(),
-        ).create(device=None)
+        # encoder_factory=C2CategoricalEncoderFactory(),
+        encoder_factory=CartpoleEnvEncoderFactory(),
+        escnn=config.escnn,
+    ).create(device=None)
 
 else:
     bc = DiscreteBCConfig(

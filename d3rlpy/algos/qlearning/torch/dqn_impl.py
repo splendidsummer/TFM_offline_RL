@@ -67,9 +67,9 @@ class DQNImpl(DiscreteQFunctionMixin, QLearningAlgoImplBase):
         loss.loss.backward()
         self._modules.optim.step()
 
-        for name, param in self._modules.q_funcs[0].named_parameters():
-            wandb.log({f'gradients/{name}': param.grad})
-            wandb.log({f'parameters/{name}': param.detach().numpy()})
+        # for name, param in self._modules.q_funcs[0].named_parameters():
+        #     wandb.log({f'gradients/{name}': param.grad})
+        #     wandb.log({f'parameters/{name}': param.detach().numpy()})
             # print('parameter name: ', name)
             # wandb.log({f'gradients_histogram/{name}': wandb.Histogram(param.grad)})  # we meet gradient vanishing at the second epoch
 

@@ -241,6 +241,7 @@ class CartpoleEnvEncoderFactory(d3rlpy.models.encoders.EncoderFactory):
         return 'CartpoleEnv'
 
 
+
 class C2EncoderFactory(d3rlpy.models.encoders.EncoderFactory):
     TYPE = 'C2Group'
     def __init__(self, feature_size=256):

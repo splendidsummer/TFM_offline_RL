@@ -5,7 +5,7 @@ import gym
 import h5py
 import numpy as np
 from d3rlpy.algos import DiscreteCQLConfig
-from d3rlpy.metrics import EnvironmentEvaluator
+from d3rlpy.metrics import EnvironmentEvaluator, DiscreteActionMatchEvaluator
 from datetime import datetime
 import argparse
 
@@ -33,7 +33,7 @@ WANDB_CONFIG = {
 }
 
 wandb.init(
-    project='Cartpole_Offline_CQL_Final',
+    project='Cartpole_Offline_BC',
     config=WANDB_CONFIG,
     entity='unicorn_upc_dl',
     # sync_tensorboard=True,
@@ -78,7 +78,7 @@ else:
     cql = DiscreteCQLConfig(
         # observation_scaler=d3rlpy.preprocessing.StandardObservationScaler(),
         # action_scaler=d3rlpy.preprocessing.MinMaxActionScaler,
-        # escnn=config.escnn,
+        # escnn=config.escnn
         ).create(device=None)
 
 cql.build_with_dataset(dataset)   # check whether we put the paramters into optimizer
@@ -90,6 +90,7 @@ results = cql.fit(
     # n_epochs=10
     evaluators={
         'reward': EnvironmentEvaluator(env),
+        'action_match': DiscreteActionMatchEvaluator(),
         # 'action match': action_match_evaluator,
         # 'td_error': TDErrorEvaluator(episodes=dataset.episodes)
     },
