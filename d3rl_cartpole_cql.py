@@ -8,6 +8,7 @@ from d3rlpy.algos import DiscreteCQLConfig
 from d3rlpy.metrics import EnvironmentEvaluator, DiscreteActionMatchEvaluator
 from datetime import datetime
 import argparse
+from utils import split_cartpole_dataset
 
 parser = argparse.ArgumentParser(description='Offline RL for Cartpole')
 parser.add_argument('--seed', type=int, default=168)
@@ -16,8 +17,8 @@ parser.add_argument("--algorithm", type=str, choices=
                     default='bc', help="Which algorithm to train ('push' or 'lift').", )
 parser.add_argument('--augmentation', '-a', action='store_true')
 parser.add_argument('--escnn', '-e',  action='store_true')
-parser.add_argument("--train_ratio", type=float, default=1.0, help="Percentage of data split from full trainset.", )
-parser.add_argument("--test_ratio", type=float, default=1.0, help="Percentage of data split from full dataset", )
+parser.add_argument("--train_ratio", type=float, default=0.1, help="Percentage of data split from full trainset.", )
+parser.add_argument("--test_ratio", type=float, default=0.2, help="Percentage of data split from full dataset", )
 args = parser.parse_args()
 
 now = datetime.now()
@@ -27,7 +28,7 @@ WANDB_CONFIG = {
     'algorithm': args.algorithm,
     'seed': args.seed,
     'augmentation': args.augmentation,
-    'escnn': True,
+    'escnn': args.escnn,
     'train_ratio':  args.train_ratio,
     'test_ratio': args.test_ratio,
 }
@@ -83,15 +84,21 @@ else:
 
 cql.build_with_dataset(dataset)   # check whether we put the paramters into optimizer
 
+trainset, testset = split_cartpole_dataset(dataset,
+                                           train_ratio=args.train_ratio,
+                                           test_ratio=args.test_ratio)
+
+action_match_evaluator = DiscreteActionMatchEvaluator(testset.episodes)
+
 results = cql.fit(
-    dataset,
+    trainset,
     n_steps=10000,
     n_steps_per_epoch=1000,
     # n_epochs=10
     evaluators={
         'reward': EnvironmentEvaluator(env),
         'action_match': DiscreteActionMatchEvaluator(),
-        # 'action match': action_match_evaluator,
+        'action match': action_match_evaluator,
         # 'td_error': TDErrorEvaluator(episodes=dataset.episodes)
     },
 )
@@ -104,4 +111,3 @@ for result in results:
 
 print('results:  ', results)
 print('finishing fitting!!}')
-
