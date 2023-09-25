@@ -34,7 +34,7 @@ WANDB_CONFIG = {
 }
 
 wandb.init(
-    project='Cartpole_Offline_BC',
+    project='Cartpole_Offline_CQL_Final',
     config=WANDB_CONFIG,
     entity='unicorn_upc_dl',
     # sync_tensorboard=True,
