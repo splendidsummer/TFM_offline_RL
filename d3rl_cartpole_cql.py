@@ -39,8 +39,8 @@ wandb.init(
     entity='unicorn_upc_dl',
     # sync_tensorboard=True,
     name=
-    # 'train_' + str(WANDB_CONFIG['train_ratio']) + '_' +
-    # 'test_' + str(WANDB_CONFIG['test_ratio']) + '_' +
+    'train_' + str(WANDB_CONFIG['train_ratio']) + '_' +
+    'test_' + str(WANDB_CONFIG['test_ratio']) + '_' +
     'augmentation_' + str(WANDB_CONFIG['augmentation']) + '_' +
     'escnn_' + str(WANDB_CONFIG['escnn']) + '_' + now,
 )
@@ -97,8 +97,7 @@ results = cql.fit(
     # n_epochs=10
     evaluators={
         'reward': EnvironmentEvaluator(env),
-        'action_match': DiscreteActionMatchEvaluator(),
-        'action match': action_match_evaluator,
+        'action_match': action_match_evaluator,
         # 'td_error': TDErrorEvaluator(episodes=dataset.episodes)
     },
 )

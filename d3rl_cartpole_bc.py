@@ -10,6 +10,7 @@ from d3rlpy.algos import BCConfig, DiscreteBCConfig
 from d3rlpy.metrics import EnvironmentEvaluator, DiscreteActionMatchEvaluator
 from datetime import datetime
 import argparse
+from utils import split_cartpole_dataset
 
 parser = argparse.ArgumentParser(description='Offline RL Behavior Cloning for Cartpole')
 parser.add_argument('--seed', type=int, default=168)  # not being used here
@@ -81,25 +82,11 @@ else:
         escnn=config.escnn,
     ).create(device=None)
 
-# full_trainset, testset = train_test_split(dataset.episodes, test_size=config.test_ratio, shuffle=False)
-# trainset, _ = train_test_split(full_trainset, train_size=config.train_ratio, shuffle=False)
+trainset, testset = split_cartpole_dataset(dataset,
+                                           train_ratio=args.train_ratio,
+                                           test_ratio=args.test_ratio)
 
-# observations, actions, rewards, terminals = [], [], [], []
-#
-# for episode in full_trainset:
-#     observations += episode.observations.tolist()
-#     actions += episode.actions.tolist()
-#     rewards += episode.rewards.tolist()
-#     terminals += [0 for _ in range(len(episode.observations.tolist())-1)] + [1]
-#
-# observations, actions, rewards, terminals = np.array(observations), \
-#     np.array(actions, dtype=np.int32), np.array(rewards), np.array(terminals)
-#
-# full_trainset = d3rlpy.dataset.MDPDataset(
-#     observations=observations, actions=actions, rewards=rewards, terminals=terminals
-# )
-
-# action_match_evaluator = DiscreteActionMatchEvaluator(episodes=testset)
+action_match_evaluator = DiscreteActionMatchEvaluator(testset.episodes)
 
 bc.build_with_dataset(dataset)
 results = bc.fit(
@@ -109,7 +96,7 @@ results = bc.fit(
     # n_epochs=10,
     evaluators={
         'reward': EnvironmentEvaluator(env),
-        'action match': DiscreteActionMatchEvaluator(),
+        'action match': action_match_evaluator,
         # 'td_error': TDErrorEvaluator(episodes=dataset.episodes)
     },
 )

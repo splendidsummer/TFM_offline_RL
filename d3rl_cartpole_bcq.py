@@ -11,6 +11,7 @@ from d3rlpy.algos import DiscreteBCQConfig
 from d3rlpy.metrics import EnvironmentEvaluator, DiscreteActionMatchEvaluator
 from datetime import datetime
 import argparse
+from utils import split_cartpole_dataset
 
 parser = argparse.ArgumentParser(description='Offline RL for Cartpole')
 parser.add_argument('--seed', type=int, default=168)
@@ -19,7 +20,7 @@ parser.add_argument("--algorithm", type=str, choices=
                     default='bc', help="Which algorithm to train ('push' or 'lift').", )
 parser.add_argument('--augmentation', '-a', action='store_true')
 parser.add_argument('--escnn', '-e',  action='store_true')
-parser.add_argument("--train_ratio", type=float, default=0.01, help="Percentage of data split from full trainset.", )
+parser.add_argument("--train_ratio", type=float, default=0.1, help="Percentage of data split from full trainset.", )
 parser.add_argument("--test_ratio", type=float, default=0.2, help="Percentage of data split from full dataset", )
 args = parser.parse_args()
 
@@ -41,8 +42,8 @@ wandb.init(
     entity='unicorn_upc_dl',
     # sync_tensorboard=True,
     name=
-    # 'train_' + str(WANDB_CONFIG['train_ratio']) + '_' +
-    # 'test_' + str(WANDB_CONFIG['test_ratio']) + '_' +
+    'train_' + str(WANDB_CONFIG['train_ratio']) + '_' +
+    'test_' + str(WANDB_CONFIG['test_ratio']) + '_' +
     'augmentation_' + str(WANDB_CONFIG['augmentation']) + '_' +
     'escnn_' + str(WANDB_CONFIG['escnn']) + '_' + now,
 )
@@ -80,29 +81,16 @@ else:
         # action_scaler=d3rlpy.preprocessing.MinMaxActionScaler,
         ).create(device=None)
 
-full_trainset, testset = train_test_split(dataset.episodes, test_size=config.test_ratio, shuffle=False)
-# trainset, _ = train_test_split(full_trainset, train_size=config.train_ratio, shuffle=False)
+trainset, testset = split_cartpole_dataset(dataset,
+                                           train_ratio=args.train_ratio,
+                                           test_ratio=args.test_ratio)
 
-observations, actions, rewards, terminals = [], [], [], []
-for episode in full_trainset:
-    observations += episode.observations.tolist()
-    actions += episode.actions.tolist()
-    rewards += episode.rewards.tolist()
-    terminals += [0 for _ in range(len(episode.observations.tolist())-1)] + [1]
-
-observations, actions, rewards, terminals = np.array(observations), \
-    np.array(actions, dtype=np.int32), np.array(rewards), np.array(terminals)
-
-full_trainset = d3rlpy.dataset.MDPDataset(
-    observations=observations, actions=actions, rewards=rewards, terminals=terminals
-)
-
-action_match_evaluator = DiscreteActionMatchEvaluator(episodes=testset)
+action_match_evaluator = DiscreteActionMatchEvaluator(episodes=testset.episodes)
 
 
-bcq.build_with_dataset(full_trainset)
+bcq.build_with_dataset(dataset)
 results = bcq.fit(
-    dataset,
+    trainset,
     n_steps=2000,
     n_steps_per_epoch=1000,
     # n_epochs=10,
@@ -113,34 +101,8 @@ results = bcq.fit(
     },
 )
 
-results = [result[1] for result in results]
-num_epochs = len(results)
-col_name = list(results[0].keys())
-losses = [result['loss'] for result in results]
-rewards = [result['reward'] for result in results]
-action_matches = [result['action match'] for result in results]
-
-result_dict = {
-    'loss': losses,
-    'reward': rewards,
-    'action_match': action_matches,
-}
-
-csv_file = 'augmentation_' + str(config.augmentation) + '_' + \
-           'escnn_' + str(config.escnn) + '_' + now + \
-           '.csv'
-
-result_df = pd.DataFrame(result_dict)
-
-import os
-result_folder = './results/BCQ'
-csv_file = os.path.join(result_folder, csv_file)
-result_df.to_csv(csv_file)
-
-
 for result in results:
     wandb.log({**result})
-
 
 print('results:  ', results)
 print('finishing fitting!!}')
