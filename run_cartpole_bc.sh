@@ -1,0 +1,10 @@
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a
+python d3rl_cartpole_bc.py -a

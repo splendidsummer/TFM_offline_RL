@@ -29,7 +29,7 @@ WANDB_CONFIG = {
     'algorithm': args.algorithm,
     'seed': args.seed,
     'augmentation': args.augmentation,
-    'escnn': args.augmentation,
+    'escnn': args.escnn,
     'train_ratio':  args.train_ratio,
     'test_ratio': args.test_ratio,
 }
@@ -104,7 +104,7 @@ else:
 bc.build_with_dataset(dataset)
 results = bc.fit(
     dataset,
-    n_steps=20000,
+    n_steps=10000,
     n_steps_per_epoch=1000,
     # n_epochs=10,
     evaluators={
