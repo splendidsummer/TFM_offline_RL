@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, NamedTuple, Optional, Union
+from typing import Any, NamedTuple, Optional, Union, Tuple
 
 import escnn
 import torch
@@ -8,6 +8,7 @@ from torch.distributions import Categorical
 from ...utils.build_reps import *
 from .distributions import GaussianDistribution, SquashedGaussianDistribution
 from .encoders import Encoder, EncoderWithAction
+from escnn.nn import EquivariantModule, FieldType
 
 __all__ = [
     "Policy",
@@ -16,6 +17,7 @@ __all__ = [
     "NormalPolicy",
     "EquivariantNormalPolicy",
     "CategoricalPolicy",
+    "EquivariantCategoricalPolicy",
     "build_gaussian_distribution",
     "build_squashed_gaussian_distribution",
     "ActionOutput",
@@ -204,3 +206,22 @@ class CategoricalPolicy(nn.Module):  # type: ignore
 
     def __call__(self, x: torch.Tensor) -> Categorical:
         return super().__call__(x)
+
+
+class EquivariantCategoricalPolicy(EquivariantModule):
+    _eqencoder: Encoder
+
+    def __init__(self, encoder):
+        super().__init__()
+        self._eqencoder = encoder
+
+    def forward(self,
+                inputs: torch.Tensor,
+                # ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+                ):
+        return Categorical(logits=self._eqencoder(inputs))
+
+    def evaluate_output_shape(self, input_shape: Tuple[int, ...]) -> Tuple[int, ...]:
+        """Returns the output shape of the model given an input shape."""
+        batch_size = input_shape[0]
+        return (batch_size, self.out_type.size)

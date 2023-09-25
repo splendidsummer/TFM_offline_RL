@@ -163,19 +163,21 @@ class DiscreteBC(_BCBase[DiscreteBCConfig]):
     def inner_create_impl(
         self, observation_shape: Shape, action_size: int
     ) -> None:
-        # imitator = create_categorical_policy(
-        #     observation_shape,
-        #     action_size,
-        #     self._config.encoder_factory,
-        #     device=self._device,
-        # )
 
-        imitator = create_equivariant_categorical_policy(
-            observation_shape,
-            # action_size,
-            self._config.encoder_factory,
-            device=self._device,
-        )
+        if self._config.escnn:
+            imitator = create_equivariant_categorical_policy(
+                observation_shape,
+                # action_size,
+                self._config.encoder_factory,
+                device=self._device,
+            )
+        else:
+            imitator = create_categorical_policy(
+                observation_shape,
+                action_size,
+                self._config.encoder_factory,
+                device=self._device,
+            )
 
         optim = self._config.optim_factory.create(
             imitator.parameters(), lr=self._config.learning_rate

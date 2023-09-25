@@ -1,5 +1,0 @@
-python d3rl_cartpole_cql.py
-python d3rl_cartpole_cql.py
-python d3rl_cartpole_cql.py
-python d3rl_cartpole_cql.py
-python d3rl_cartpole_cql.py

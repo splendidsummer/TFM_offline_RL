@@ -25,6 +25,9 @@ __all__ = [
     "EquivariantContinuousMeanQFunction",
     "DiscreteMeanQFunctionForwarder",
     "ContinuousMeanQFunctionForwarder",
+    "compute_invariant_features",
+    "process_trifinger_obs",
+    "quaternion2rot",
 ]
 
 

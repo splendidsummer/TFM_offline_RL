@@ -1,5 +1,4 @@
 from typing import Sequence, Tuple, cast
-import escnn
 import torch
 from torch import nn
 from ..dataset import Shape
@@ -23,7 +22,6 @@ from .torch import (
     VAEDecoder,
     VAEEncoder,
     ValueFunction,
-    EquivariantValueFunction,
     compute_output_size,
 )
 from .utility import create_activation

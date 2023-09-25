@@ -27,7 +27,7 @@ WANDB_CONFIG = {
     'algorithm': args.algorithm,
     'seed': args.seed,
     'augmentation': args.augmentation,
-    'escnn': args.escnn,
+    'escnn': True,
     'train_ratio':  args.train_ratio,
     'test_ratio': args.test_ratio,
 }
