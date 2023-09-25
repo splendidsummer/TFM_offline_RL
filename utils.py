@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct  2 22:41:50 2022
-
-@author: qiang
-"""
-
 import random
 import os
 import numpy as np
@@ -18,16 +10,45 @@ from datetime import datetime
 import time
 import json
 from contextlib import contextmanager
-from d3rlpy.dataset import Episode, MDPDataset, Transition
+from sklearn.model_selection import train_test_split
 from typing import (cast, List)
-# from d3rlpy.iterators import RoundIterator
 import math
-from copy import deepcopy
+import d3rlpy
 
 LIFT_TASK_OBS_DIM = 139
 PUSH_TASK_OBS_DIM = 97
 ACTION_DIM = 9
 MAX_ACTION = 0.397
+
+
+def episodes_to_dataset(episodes):
+    observations, actions, rewards, terminals = [], [], [], []
+    for episode in episodes:
+        observations += episode.observations.tolist()
+        actions += episode.actions.tolist()
+        rewards += episode.rewards.tolist()
+        terminals += [0 for _ in range(len(episode.observations.tolist()) - 1)] + [1]
+
+    observations, actions, rewards, terminals = np.array(observations), \
+        np.array(actions, dtype=np.int32), np.array(rewards), np.array(terminals)
+
+    dataset = d3rlpy.dataset.MDPDataset(
+        observations=observations, actions=actions, rewards=rewards, terminals=terminals
+    )
+
+    return dataset
+
+
+def split_cartpole_dataset(dataset, train_ratio, test_ratio):
+    train_episodes, test_episodes = train_test_split(dataset.episodes,
+                                                     train_size=train_ratio,
+                                                     test_size=test_ratio,
+                                                     shuffle=False
+                                                     )
+    trainset = episodes_to_dataset(train_episodes)
+    testset = episodes_to_dataset(test_episodes)
+
+    return trainset, testset
 
 
 def modify_obs_to_keep(task: str) -> dict:
@@ -138,36 +159,6 @@ def rot_augment(raw, angle):
     rotate_matrix = np.asarray([[math.cos(angle), -math.sin(angle)],
                                 [math.sin(angle), math.cos(angle)]])
     return np.dot(rotate_matrix, raw)
-
-#
-# def gen_iterator(dataset, batch_size=256, n_steps_per_epoch=10000,
-#                  gamma=1.0, n_frames=1, real_ratio=1.0,
-#                  generated_maxlen=100000, n_steps=1, shuffle=True):
-#     transitions = []
-#     if isinstance(dataset, MDPDataset):
-#         for episode in dataset.episodes:
-#             transitions += episode.transitions
-#     elif not dataset:
-#         raise ValueError("empty dataset is not supported.")
-#     elif isinstance(dataset[0], Episode):
-#         for episode in cast(List[Episode], dataset):
-#             transitions += episode.transitions
-#     elif isinstance(dataset[0], Transition):
-#         transitions = list(cast(List[Transition], dataset))
-#     else:
-#         raise ValueError(f"invalid dataset type: {type(dataset)}")
-#
-#     iterator = RoundIterator(
-#         transitions,
-#         batch_size=batch_size,
-#         n_steps=n_steps,
-#         gamma=gamma,
-#         n_frames=n_frames,
-#         real_ratio=real_ratio,
-#         generated_maxlen=generated_maxlen,
-#         shuffle=shuffle,
-#     )
-#     return iterator
 
 
 class _SaveProtocol(Protocol):

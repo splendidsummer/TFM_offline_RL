@@ -1,8 +1,5 @@
 import pandas as pd
-from d3rlpy.preprocessing import action_scalers
-from datetime import datetime
 from escnn_model import *
-from gym.envs import classic_control
 import d3rlpy
 import wandb
 import gym
@@ -10,7 +7,7 @@ import h5py
 import numpy as np
 from d3rlpy.dataset import MDPDataset
 from sklearn.model_selection import train_test_split
-from d3rlpy.algos import DiscreteCQLConfig, DiscreteBCConfig, DiscreteBCQConfig
+from d3rlpy.algos import DiscreteBCQConfig
 from d3rlpy.metrics import EnvironmentEvaluator, DiscreteActionMatchEvaluator
 from datetime import datetime
 import argparse
@@ -21,7 +18,7 @@ parser.add_argument("--algorithm", type=str, choices=
                     ["bc", "td3+bc", "iql", "cql", "awac", "bcq", "bear", "crr", "plas", "plaswp"],
                     default='bc', help="Which algorithm to train ('push' or 'lift').", )
 parser.add_argument('--augmentation', '-a', action='store_true')
-# parser.add_argument('--escnn', '-e',  action='store_true')
+parser.add_argument('--escnn', '-e',  action='store_true')
 parser.add_argument("--train_ratio", type=float, default=0.01, help="Percentage of data split from full trainset.", )
 parser.add_argument("--test_ratio", type=float, default=0.2, help="Percentage of data split from full dataset", )
 args = parser.parse_args()
@@ -32,22 +29,22 @@ now = now.strftime('%m%d%H%M%S')
 WANDB_CONFIG = {
     'algorithm': args.algorithm,
     'seed': args.seed,
-    'augmentation': False,
-    'escnn': False,
+    'augmentation': args.augmentation,
+    'escnn': args.escnn,
     'train_ratio':  args.train_ratio,
     'test_ratio': args.test_ratio,
 }
 
 wandb.init(
-    # project='Cartpole_' + 'Offline' + '_EquivariantNN_Prob',
-    project='debugging',
+    project='Cartpole_Offline_BCQ',
     config=WANDB_CONFIG,
     entity='unicorn_upc_dl',
     # sync_tensorboard=True,
-    name='train_' + str(WANDB_CONFIG['train_ratio']) + '_' +
-         'test_' + str(WANDB_CONFIG['test_ratio']) + '_' +
-         'augmentation_' + str(WANDB_CONFIG['augmentation']) + '_' +
-         'escnn_' + str(WANDB_CONFIG['escnn']) + '_' + now,
+    name=
+    # 'train_' + str(WANDB_CONFIG['train_ratio']) + '_' +
+    # 'test_' + str(WANDB_CONFIG['test_ratio']) + '_' +
+    'augmentation_' + str(WANDB_CONFIG['augmentation']) + '_' +
+    'escnn_' + str(WANDB_CONFIG['escnn']) + '_' + now,
 )
 
 config = wandb.config
