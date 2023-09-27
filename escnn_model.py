@@ -38,6 +38,7 @@ emlp_args = {
 categorical_emlp_args = {
     'in_type': policy_in_type,
     'out_type': categorical_prob_type,
+    'num_layers': 2,
     'activation': "ELU",
 }
 

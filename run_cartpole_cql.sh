@@ -1,0 +1,10 @@
+python d3rl_cartpole_cql.py -e --train_ratio=0.02
+python d3rl_cartpole_cql.py -e --train_ratio=0.02
+python d3rl_cartpole_cql.py -e --train_ratio=0.02
+python d3rl_cartpole_cql.py -e --train_ratio=0.02
+python d3rl_cartpole_cql.py -e --train_ratio=0.02
+python d3rl_cartpole_cql.py --train_ratio=0.02
+python d3rl_cartpole_cql.py --train_ratio=0.02
+python d3rl_cartpole_cql.py --train_ratio=0.02
+python d3rl_cartpole_cql.py --train_ratio=0.02
+python d3rl_cartpole_cql.py --train_ratio=0.02
